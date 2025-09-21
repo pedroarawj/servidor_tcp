@@ -1,0 +1,25 @@
+# Arquivos compilados
+build/
+*.exe
+*.o
+*.a
+*.so
+*.dll
+
+# Arquivos de log
+*.log
+app.log
+
+# Backup files
+*~
+*.bak
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
