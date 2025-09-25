@@ -28,14 +28,10 @@ GCC
 Make
 Biblioteca pthread
 
-Clone ou baixe o projeto
-git clone <url-do-repositorio>
-cd libtslog
-
-Compile o projeto
+Navegue ao diretório do projeto e compile com:
 make
 
-Limpar arquivos compilados
+Para limpar arquivos compilados:
 make clean
 
 Limpar e recompilar tudo
