@@ -6,9 +6,9 @@
 
 ## 📹 Vídeo de Demonstração
 
-[![Assistir à Demonstração](https://img.shields.io/badge/🎬-Assistir_ao_Vídeo-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/SEU_LINK_AQUI)
+[![Assistir à Demonstração](https://img.shields.io/badge/📹-Assistir_ao_Vídeo-4285F4?style=for-the-badge&logo=googledrive)](https://drive.google.com/file/d/1QRh_sGfFxmlQcCmbbvgMTfsNUbmKm0vT/view?usp=sharing)
 
-*Duração: 3 minutos - Demonstra todas as funcionalidades do sistema*
+*Duração: 2 min 40 seg*
 
 ---
 
