@@ -21,6 +21,11 @@ LIB_SRC = $(SRC_DIR)/libtslog.c
 LIB_OBJ = $(BUILD_DIR)/libtslog.o
 LIB_HEADER = $(INCLUDE_DIR)/libtslog.h
 
+# Fila thread-safe
+QUEUE_SRC = $(SRC_DIR)/fila_threadsafe.c
+QUEUE_OBJ = $(BUILD_DIR)/fila_threadsafe.o
+QUEUE_HEADER = $(INCLUDE_DIR)/fila_threadsafe.h
+
 # Teste unitário
 TEST_SRC = $(TEST_DIR)/log_teste.c
 TEST_BIN = $(BUILD_DIR)/log_teste
@@ -41,76 +46,53 @@ TEST_SCRIPT = $(TEST_DIR)/testar_cliente.sh
 # REGRAS PRINCIPAIS
 # =============================================
 
-# Alvo padrão - compila tudo
-all: libtslog log_teste servidor cliente
+all: libtslog queue log_teste servidor cliente
 	@echo "=== Compilação concluída ==="
 	@echo "Arquivos gerados em $(BUILD_DIR)/:"
 	@echo "  - $(notdir $(TEST_BIN))    (teste unitário)"
 	@echo "  - $(notdir $(SERVER_BIN))  (servidor)"
 	@echo "  - $(notdir $(CLIENT_BIN))  (cliente)"
 
-# Apenas compilar (sem executar) 
-compile: all
-	@echo "Compilação concluída."
-
-# Compilar e executar teste unitário
-run: $(TEST_BIN)
-	@echo "Executando teste unitário..."
-	./$(TEST_BIN)
-
-# Compilar e executar servidor
-run-server: $(SERVER_BIN)
-	@echo "Executando servidor..."
-	./$(SERVER_BIN)
-
-# Compilar e executar cliente
-run-client: $(CLIENT_BIN)
-	@echo "Executando cliente..."
-	./$(CLIENT_BIN)
-
-# Testar com múltiplos clientes
-test-clients: servidor cliente
-	@echo "=== Teste com múltiplos clientes ==="
-	@chmod +x $(TEST_SCRIPT)
-	./$(TEST_SCRIPT)
-
 # =============================================
 # REGRAS DE COMPILAÇÃO
 # =============================================
 
-# Criar diretório build se não existir
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
-# Compilar a biblioteca
+# Biblioteca de log
 $(LIB_OBJ): $(LIB_SRC) $(LIB_HEADER) | $(BUILD_DIR)
 	@echo "Compilando biblioteca libtslog..."
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Alvo para biblioteca
 libtslog: $(LIB_OBJ)
 
-# Compilar o teste unitário
+# Fila thread-safe
+$(QUEUE_OBJ): $(QUEUE_SRC) $(QUEUE_HEADER) | $(BUILD_DIR)
+	@echo "Compilando fila thread-safe..."
+	$(CC) $(CFLAGS) -c $< -o $@
+
+queue: $(QUEUE_OBJ)
+
+# Teste unitário
 $(TEST_BIN): $(TEST_SRC) $(LIB_OBJ) | $(BUILD_DIR)
 	@echo "Compilando teste unitário..."
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Alvo para teste unitário
 log_teste: $(TEST_BIN)
 
-# Compilar servidor
-$(SERVER_OBJ): $(SERVER_SRC) $(LIB_HEADER) | $(BUILD_DIR)
+# Servidor
+$(SERVER_OBJ): $(SERVER_SRC) $(LIB_HEADER) $(QUEUE_HEADER) | $(BUILD_DIR)
 	@echo "Compilando servidor..."
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(SERVER_BIN): $(SERVER_OBJ) $(LIB_OBJ) | $(BUILD_DIR)
+$(SERVER_BIN): $(SERVER_OBJ) $(LIB_OBJ) $(QUEUE_OBJ) | $(BUILD_DIR)
 	@echo "Linkando servidor..."
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Alvo para servidor
 servidor: $(SERVER_BIN)
 
-# Compilar cliente
+# Cliente
 $(CLIENT_OBJ): $(CLIENT_SRC) $(LIB_HEADER) | $(BUILD_DIR)
 	@echo "Compilando cliente..."
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -119,7 +101,6 @@ $(CLIENT_BIN): $(CLIENT_OBJ) $(LIB_OBJ) | $(BUILD_DIR)
 	@echo "Linkando cliente..."
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Alvo para cliente
 cliente: $(CLIENT_BIN)
 
 # =============================================
