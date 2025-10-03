@@ -183,8 +183,3 @@ Este projeto é para fins educacionais. Desenvolvido como trabalho acadêmico.
 - [**Relatório Técnico**](./relatorio_tecnico.md)
 
 ---
-
-
----
-
-**💡 Dica:** Substitua `SEU_LINK_AQUI` pelo link real do seu vídeo quando tiver hospedado!
