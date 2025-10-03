@@ -1,149 +1,126 @@
-# 📝 libtslog - Biblioteca de Logging Thread-Safe
+# 🗨️ Sistema de Chat Multithread
 
-## 🏗️ Arquitetura e Padrões
+**Sistema de chat cliente-servidor desenvolvido em C com threads, sockets e sincronização para a disciplina Linguagem de Programação II.**
 
-### **Componentes Principais**
+---
 
-- **Estrutura `logger_t`**: Armazena o handle para o arquivo de log (`FILE*`) e um mutex (`pthread_mutex_t`) para serializar acesso concorrente
-- **Função `log_init`**: Atua como construtor do Singleton - inicializa a estrutura, abre arquivo em modo "append" e inicializa o mutex
-- **Função `log_escrever`**: Método principal - adquire lock, escreve mensagem com timestamp, garante flush e libera lock
-- **Função `log_destruir`**: Destrutor - libera todos os recursos alocados (mutex, arquivo, memória)
+## 📹 Vídeo de Demonstração
 
-### **Fluxo de Dados**
+[![Assistir à Demonstração](https://img.shields.io/badge/🎬-Assistir_ao_Vídeo-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/SEU_LINK_AQUI)
 
-1. Aplicação cliente chama `log_init()` para obter instância do logger
-2. Threads chamam `log_escrever()` passando mensagens
-3. Internamente, `log_escrever()` serializa acesso ao arquivo
-4. No final da aplicação, `log_destruir()` libera recursos
+*Duração: 3 minutos - Demonstra todas as funcionalidades do sistema*
 
-## 🚀 Sistema de Chat com Logging Integrado
+---
 
-### **Funcionalidades**
-- ✅ **Servidor TCP/IP** multi-cliente na porta 18080
-- ✅ **Cliente de chat** com interface intuitiva
-- ✅ **Logging thread-safe** com timestamps
-- ✅ **Scripts de teste** para múltiplos clientes
-- ✅ **Makefile completo** com automação
+## 🎯 Objetivo do Projeto
 
-## 📁 Estrutura do Projeto
+Desenvolver um sistema de chat multithread que demonstre conceitos avançados de programação concorrente, incluindo:
+- Threads e sincronização
+- Comunicação via sockets
+- Gerenciamento de recursos compartilhados
+- Logging thread-safe
+- Padrões de arquitetura cliente-servidor
 
-```
-.
+## ⚙️ Funcionalidades Implementadas  
+**Conexão múltipla de clientes** (até 10 simultâneos) **Broadcast de mensagens** em tempo real - **Logging thread-safe** com timestamps - **Sincronização com mutexes e condition variables** - **Fila thread-safe** para mensagens - **Shutdown graceful** com Ctrl+C - **Tratamento robusto de erros** ### 🔄 Fluxo de Operação 1. Servidor inicia e aguarda conexões 2. Clientes conectam via TCP na porta 8080 3. Cada cliente é atendido por uma thread dedicada 4. Mensagens são broadcast para todos os clientes 5. Logs são gerados concorrentemente em arquivo## 📁 Estrutura do Projeto 
+
+projeto/
 ├── src/
-│   ├── libtslog.c          # Biblioteca de logging
-│   ├── servidor.c          # Servidor de chat
-│   └── cliente.c           # Cliente de chat
+│ ├── servidor.c # Servidor multithread principal
+│ ├── cliente.c # Cliente de chat
+│ ├── libtslog.c # Sistema de logging thread-safe
+│ ├── fila_threadsafe.c # Fila com sincronização
+│ └── log_teste.c # Teste do sistema de logs
 ├── include/
-│   └── libtslog.h          # Headers da biblioteca
-├── test/
-│   ├── log_teste.c         # Testes unitários
-│   └── testar_cliente.sh   # Script de teste múltiplos clientes
-├── build/                  # Binários compilados
-└── Makefile               # Sistema de build
-```
+│ ├── libtslog.h
+│ └── fila_threadsafe.h
+├── scripts/
+│ └── testar_cliente.sh # Script de teste automatizado
+├── logs/ # Logs gerados (auto-criado)
+├── README.md # Este arquivo
+└── Makefile # Sistema de build
 
-## 🔧 Compilação
+text
 
-### **Pré-requisitos**
-- GCC
-- Make
-- Biblioteca pthread
+--- ## 🚀 Como Executar ### Pré-requisitos ```bash # Sistema Linux com gcc e pthreads sudo apt-get install build-essential # Ubuntu/Debian
 
-### **Compilação Automática (Recomendada)**
-```bash
-# Compilar tudo
-make all
+Compilação
 
-# Apenas compilar (sem executar)
-make compile
+bash
 
-# Limpar e recompilar tudo
-make rebuild
-```
+# Usando Makefile make  # Ou manualmente gcc -pthread src/servidor.c src/libtslog.c src/fila_threadsafe.c -o servidor gcc -pthread src/cliente.c src/libtslog.c -o cliente
 
-### **Compilação Manual**
-```bash
-# Criar pasta build
-mkdir -p build
+Execução
 
-# Compilar a biblioteca
-gcc -Wall -Wextra -pedantic -g -I./include -c src/libtslog.c -o build/libtslog.o
+bash
 
-# Compilar e linkar o teste
-gcc -Wall -Wextra -pedantic -g -I./include test/log_teste.c build/libtslog.o -o build/log_teste -lpthread
+# Terminal 1 - Servidor ./build/servidor # Terminal 2 - Cliente 1 ./build/cliente # Terminal 3 - Cliente 2 ./build/cliente # Ou usar script de teste ./scripts/testar_cliente.sh
 
-# Compilar servidor
-gcc -Wall -Wextra -pedantic -g -I./include -c src/servidor.c -o build/servidor.o
-gcc build/servidor.o build/libtslog.o -o build/servidor -lpthread
+Comandos do Cliente
 
-# Compilar cliente
-gcc -Wall -Wextra -pedantic -g -I./include -c src/cliente.c -o build/cliente.o
-gcc build/cliente.o build/libtslog.o -o build/cliente -lpthread
-```
+bash
 
-## 🎯 Uso
+> Olá pessoal! # Envia mensagem para todos > sair # Desconecta graciosamente Ctrl + C # Saída emergencial
 
-### **Executar Testes Unitários**
-```bash
-make run
-```
+🧪 Testes Realizados
 
-### **Executar Servidor**
-```bash
-make run-server
-```
+Testes de Funcionalidade
 
-### **Executar Cliente**
-```bash
-make run-client
-```
+Conexão múltipla: 10 clientes simultâneos
 
-### **Testar com Múltiplos Clientes**
-```bash
-make test-clients
-```
+Broadcast: Mensagens entregues a todos
 
-## 📊 Comandos do Makefile
+Logging concorrente: Sem race conditions
 
-```bash
-make all           # Compila todos os componentes
-make servidor      # Compila apenas o servidor
-make cliente       # Compila apenas o cliente
-make log_teste     # Compila apenas os testes
-make clean         # Remove arquivos compilados e logs
-make status        # Mostra status da compilação
-make help          # Mostra todos os comandos disponíveis
-```
+Stress test: 100+ mensagens/minuto
+
+Shutdown graceful: Ctrl+C funciona corretamente
+
+Testes de Estabilidade
+
+Race conditions: Verificado com análise de IA
+
+File descriptors: Todos fechados adequadamente
+
+Recuperação de erro: Clientes desconectados corretamente
+
+🔧 Tecnologias e Conceitos
+
+Concorrência e paralelismo
+Mutexes 
+Exclusão mútua em recursos compartilhados
+Condition Variables
+Sincronização entre threads
+Sockets TCP
+Comunicação em rede
+Fila Circular
+Buffer de mensagens
+Logging Thread-Safe
+Registro concorrente
+
+🐛 Problemas Resolvidos
+
+Race condition no broadcast ✅
+
+Shutdown não graceful ✅
 
 
-## 🛠️ API da Biblioteca
+Desconexões prematuras ✅
 
-### **Funções Disponíveis**
-- `logger_t* log_init(const char *nomeArquivo)`
-- `void log_escrever(logger_t *log, const char *mensagem)`
-- `void log_escrever_verbose(logger_t *log, const char *mensagem)`
-- `void log_set_verbose(logger_t *log, int verbose)`
-- `void log_destruir(logger_t *log)`
+Menores
 
-## 📝 Características Técnicas
+Interface do usuário ✅
 
-- **Porta**: 8080
-- **Máx. Clientes**: 10 simultâneos
-- **Threads**: pthreads para concorrência
-- **Sincronização**: mutex para acesso seguro
-- **Protocolo**: TCP/IP
-- **Logs**: Timestamps no formato `DD-MM-YYYY HH:MM:SS`
+Este projeto é para fins educacionais. Desenvolvido como trabalho acadêmico.
 
-## 🐛 Solução de Problemas
+🔗 Links Úteis
 
-### **Porta já em uso**
-```bash
-# Liberar porta 8080
-make clean-port
-```
+Repositório do Projeto
 
-### **Problemas de compilação**
-```bash
-# Limpar e recompilar tudo
-make rebuild
-```
+Documentação Completa
+
+Relatório Técnico
+
+
+
+
